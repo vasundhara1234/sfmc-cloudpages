@@ -10,4 +10,4 @@ To contribute review [issues](https://github.com/sfmcdg/sfmc-cloudpages/issues) 
 
 Tickets are tagged with different labels, our contributing branch strategy for open `enhancements` is `dev.[issue-number]` where `[issue-number]` is the issue that the enhancement was requested on.
 
-Thanks for considering helping out with SFMC Cloud Pages.
+Thanks for considering helping out with sfmc-cloudpages project and looking forward to some awesome pull requests.
