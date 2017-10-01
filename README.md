@@ -12,6 +12,6 @@ Tickets are tagged with different labels, our contributing branch strategy for o
 
 Thanks for considering helping out with sfmc-cloudpages project and looking forward to some awesome pull requests.
 
-##Documentation License
+## Documentation License
 
 This document shared with the [MIT License](https://github.com/sfmcdg/sfmc-cloudpages/blob/master/LICENSE).
