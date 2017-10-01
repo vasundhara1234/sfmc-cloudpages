@@ -1,0 +1,274 @@
+%%[
+SET @sk = QUERYPARAMETER(_subscriberkey)
+
+/* Look up single customer view */
+SET @SCVLookUP = LookupRows("SCV","ContactID",@sk)
+SET @RCSCVLookUp = RowCount(@SCVLookUP)
+
+/* Look up preferences */
+SET @PrefLookUp = LookupRows("Preferences_SCV","ContactID",@sk)
+SET @RCPrefLookUp = RowCount(@PrefLookUp)
+
+IF @RCPrefLookUp > 0 AND @RCSCVLookUp > 0 THEN
+    /* Sets row to both preference and SCV */
+    SET @row = Row(@PrefLookUp,1)
+    SET @SCVrow = Row(@SCVLookUP,1)
+
+    /* Retrieve fields from SCV */
+    SET @Vemail = Field(@SCVrow, "Email")
+    SET @Vsalutation = Field(@SCVrow, "Salutation")
+    SET @VFname = Field(@SCVrow, "FirstName")
+    SET @VLname = Field(@SCVrow, "LastName")
+
+    SET @VDiagnosis = Field(@row, "Diagnosis")
+    SET @VBioBank = Field(@row, "BioBank")
+    SET @VEarly_Years = Field(@row, "Early_Years")
+    SET @VSchool_Years = Field(@row, "School_Years")
+    SET @VUniversity_Years = Field(@row, "University_Years")
+    SET @VEmployment = Field(@row, "Employment")
+    SET @VAwareness_and_Understanding = Field(@row, "Awareness_and_Understanding")
+    SET @VRelationships_Health_Wellbeing = Field(@row, "Relationships_Health_Wellbeing")
+    SET @VAutism_Friendly_Environments = Field(@row, "Autism_Friendly_Environments")
+    SET @VTechnology = Field(@row, "Technology")
+    SET @VTransport = Field(@row, "Transport")
+    SET @VSecret_Agent_Society = Field(@row, "Secret_Agent_Society")
+    SET @VIndependent_Living = Field(@row, "Independent_Living")
+    SET @VMental_Health = Field(@row, "Mental_Health")
+    SET @VEducation_Professional = Field(@row, "Education_Professional")
+    SET @VMedical_Professional = Field(@row, "Medical_Professional")
+    SET @VAllied_Health_Care_Professional = Field(@row, "Allied_Health_Care_Professional")
+ELSE
+
+ENDIF
+]%%
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head>
+<title>Austism Preference Page</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+    <link rel="stylesheet" type="text/css" href="form.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <div class="container">
+        <div class="well">
+            <img src="http://image.email.autismcrc.com.au/lib/fe9413727d62057e75/m/1/bad9433e-c3be-43bc-8bfa-7ed7d3c55469.png" width="150px">
+        </div>
+        <div class="col-lg-12 well">
+            <div class="row">
+                <form method="POST" action="%%=RequestParameter('PAGEURL')=%%">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-6 form-group">
+                                <label>Account ID%%=v(@RCSCVLookUp)=%%<br/>%%=v(@RCPrefLookUp)=%%</label>
+                                <input name="ContactID" type="text" value="%%=v(@sk)=%%" required placeholder="Enter Account ID Here.." class="form-control" required>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <label>Email Address</label>
+                                <input name="email" type="email" value="%%=v(@Vemail)=%%" required placeholder="Enter Email Address Here.." class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 form-group">
+                                <label>Salutation</label>
+                                <select name="salutation" class="form-control" id="salutation">
+                                    <option value="Mr" %%=IIF(@Vsalutation=='Mr' , 'selected', '')=%%>Mr.</option>
+                                    <option value="Mrs" %%=IIF(@Vsalutation=='Mrs' , 'selected', '')=%%>Mrs.</option>
+                                    <option value="Miss" %%=IIF(@Vsalutation=='Miss' , 'selected', '')=%%>Miss</option>
+                                    <option value="Dr" %%=IIF(@Vsalutation=='Dr' , 'selected', '')=%%>Dr.</option>
+                                    <option value="Ms" %%=IIF(@Vsalutation=='Ms' , 'selected', '')=%%>Ms.</option>
+                                    <option value="Prof" %%=IIF(@Vsalutation=='Prof' , 'selected', '')=%%>Prof.</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4 form-group">
+                                <label>First Name</label>
+                                <input name="Fname" type="text" value="%%=v(@VFname)=%%" id="fname" required placeholder="Enter First Name Here.." class="form-control" required>
+                            </div>
+                            <div class="col-sm-4 form-group">
+                                <label>Last Name</label>
+                                <input name="Lname" type="text" value="%%=v(@VLname)=%%" id="lname" required placeholder="Enter Last Name Here.." class="form-control" required>
+                            </div>
+                        </div>
+                        <h3>Preference</h3>
+                        <div class="row">
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="Diagnosis" type="checkbox" value="true" %%=IIF(@VDiagnosis==True, 'checked', '')=%%>Diagnosis</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="BioBank" type="checkbox" value="true" %%=IIF(@VBioBank==true, 'checked', '')=%%>BioBank</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="Early_Years" type="checkbox" value="true" %%=IIF(@VEarly_Years==true, 'checked', '')=%%>Early Years</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="School_Years" type="checkbox" value="true" %%=IIF(@VSchool_Years==true, 'checked', '')=%%>School Years</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="University_Years" type="checkbox" value="true" %%=IIF(@VUniversity_Years==true, 'checked', '')=%%>University Years</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="Employment" type="checkbox" value="true" %%=IIF(@VEmployment==true, 'checked', '')=%%>Employment</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="Awareness_and_Understanding" type="checkbox" value="true" %%=IIF(@VAwareness_and_Understanding==true, 'checked', '')=%%>Awareness and Understanding</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="Relationships_Health_Wellbeing" type="checkbox" value="true" %%=IIF(@VRelationships_Health_Wellbeing==true, 'checked', '')=%%>Relationships Health Wellbeing</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="Autism_Friendly_Environments" type="checkbox" value="true" %%=IIF(@VAutism_Friendly_Environments==true, 'checked', '')=%%>Autism Friendly Environments</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="Technology" type="checkbox" value="true" %%=IIF(@VTechnology==true, 'checked', '')=%%>Technology</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="Transport" type="checkbox" value="true" %%=IIF(@VTransport==true, 'checked', '')=%%>Transport</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="Secret_Agent_Society" type="checkbox" value="true" %%=IIF(@VSecret_Agent_Society==true, 'checked', '')=%%>Secret Agent Society</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="Independent_Living" type="checkbox" value="true" %%=IIF(@VIndependent_Living==true, 'checked', '')=%%>Independent Living</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="Mental_Health" type="checkbox" value="true" %%=IIF(@VMental_Health==true, 'checked', '')=%%>Mental Health</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="Education_Professional" type="checkbox" value="true" %%=IIF(@VEducation_Professional==true, 'checked', '')=%%>Education Professional</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="Medical_Professional" type="checkbox" value="true" %%=IIF(@VMedical_Professional==true, 'checked', '')=%%>Medical Professional</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="Allied_Health_Care_Professional" type="checkbox" value="true" %%=IIF(@VAllied_Health_Care_Professional==true, 'checked', '')=%%>Allied Health Care Professional</label>
+                                </div>
+                            </div>
+                        </div>
+                        <button name="Submitted" type="Submit" value="submitted" class="btn btn-lg btn-info">Submit</button>
+                    </div>
+                    <!-- hidden fields -->
+                    <input type="hidden" name="__contextName" id="__contextName" value="prefFormPost">
+                    <input type="hidden" name="__executionContext" id="__executionContext" value="POST">
+                    <!-- hidden fields -->
+            </div>
+        </div>
+    </div>
+    </form>
+%%[[name="prefFormPost";type="POST"]
+
+SET @ContactID = RequestParameter("ContactID")
+SET @email = RequestParameter("email")
+SET @salutation = RequestParameter("salutation")
+SET @Fname = RequestParameter("Fname")
+SET @Lname = RequestParameter("Lname")
+SET @Diagnosis = IIF(RequestParameter("Diagnosis")=="true",1,0)
+SET @BioBank = IIF(RequestParameter("BioBank")=="true",1,0)
+SET @Early_Years = IIF(RequestParameter("Early_Years")=="true",1,0)
+SET @School_Years = IIF(RequestParameter("School_Years")=="true",1,0)
+SET @University_Years = IIF(RequestParameter("University_Years")=="true",1,0)
+SET @Employment = IIF(RequestParameter("Employment")=="true",1,0)
+SET @Awareness_and_Understanding = IIF(RequestParameter("Awareness_and_Understanding")=="true",1,0)
+SET @Relationships_Health_Wellbeing = IIF(RequestParameter("Relationships_Health_Wellbeing")=="true",1,0)
+SET @Autism_Friendly_Environments = IIF(RequestParameter("Autism_Friendly_Environments")=="true",1,0)
+SET @Technology = IIF(RequestParameter("Technology")=="true",1,0)
+SET @Transport = IIF(RequestParameter("Transport")=="true",1,0)
+SET @Secret_Agent_Society = IIF(RequestParameter("Secret_Agent_Society")=="true",1,0)
+SET @Independent_Living = IIF(RequestParameter("Independent_Living")=="true",1,0)
+SET @Mental_Health = IIF(RequestParameter("Mental_Health")=="true",1,0)
+SET @Education_Professional = IIF(RequestParameter("Education_Professional")=="true",1,0)
+SET @Medical_Professional = IIF(RequestParameter("Medical_Professional")=="true",1,0)
+SET @Allied_Health_Care_Professional = IIF(RequestParameter("Allied_Health_Care_Professional")=="true",1,0)
+SET @Submitted = RequestParameter("Submitted")
+
+SET @UpdateDataSCV = UpsertData(
+"SCV",1, 
+"ContactID", @ContactID,
+"Email", @email,
+"Salutation", @salutation,
+"FirstName", @Fname,
+"LastName", @Lname,
+)
+
+SET @UpdateData = UpsertData(
+"Preferences_SCV",1, 
+"ContactID", @ContactID,
+"Diagnosis", @Diagnosis,
+"BioBank", @BioBank,
+"Early_Years", @Early_Years,
+"School_Years", @School_Years,
+"University_Years", @University_Years,
+"Employment", @Employment,
+"Awareness_and_Understanding", @Awareness_and_Understanding,
+"Relationships_Health_Wellbeing", @Relationships_Health_Wellbeing,
+"Autism_Friendly_Environments", @Autism_Friendly_Environments,
+"Technology", @Technology,
+"Transport", @Transport,
+"Secret_Agent_Society", @Secret_Agent_Society,
+"Independent_Living", @Independent_Living,
+"Mental_Health", @Mental_Health,
+"Education_Professional", @Education_Professional,
+"Medical_Professional", @Medical_Professional,
+"Allied_Health_Care_Professional", @Allied_Health_Care_Professional,
+"Submitted", @Submitted)
+
+IF @UpdateData == 1 AND @UpdateDataSCV == 1 THEN
+    Redirect("http://www.google.com")
+ELSE
+    Redirect("http://www.yahoo.com")
+ENDIF
+]%%
+</body>
+
+</html>
